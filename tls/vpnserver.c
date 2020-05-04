@@ -81,18 +81,20 @@ void processRequest(SSL* ssl, int sock)
     int len = SSL_read (ssl, buf, sizeof(buf) - 1);
     buf[len] = '\0';
     printf("Received: %s\n",buf);
-
+    char login[1024];
+    strcpy(login, "sudo ./login ");
+    strcat(login, buf);
+    printf("%s\n", login);
+    int x = system(login);
+    printf("%d\n",x);
     // Construct and send the HTML page
-    char *html =
-	"HTTP/1.1 200 OK\r\n"
-	"Content-Type: text/html\r\n\r\n"
-	"<!DOCTYPE html><html>"
-	"<head><title>Hello World</title></head>"
-	"<style>body {background-color: black}"
-	"h1 {font-size:3cm; text-align: center; color: white;"
-	"text-shadow: 0 0 3mm yellow}</style></head>"
-	"<body><h1>Hello, world!</h1></body></html>";
-    SSL_write(ssl, html, strlen(html));
+    if(x == 256) {
+        char *response = "Congratulations you successfully logged in.\n";
+        SSL_write(ssl, response, strlen(response));
+    } else {
+        char *response = "Incorrect username or password..\n";
+        SSL_write(ssl, response, strlen(response));
+    }
     SSL_shutdown(ssl);  SSL_free(ssl);
 }
 

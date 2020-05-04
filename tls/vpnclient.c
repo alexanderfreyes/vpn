@@ -98,7 +98,14 @@ int main(int argc, char *argv[])
    /*----------------Send/Receive data --------------------*/
    char buf[9000];
    char sendBuf[200];
-   sprintf(sendBuf, "GET / HTTP/1.1\nHost: %s\n\n", hostname);
+   char username[50];
+   char password[50];
+   printf("Username:\n");
+   scanf("%s",username);
+   printf("Password:\n");
+   scanf("%s", password);
+
+   sprintf(sendBuf, "%s %s", username, password);
    SSL_write(ssl, sendBuf, strlen(sendBuf));
 
    int len;
